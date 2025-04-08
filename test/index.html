@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PISLUMYUT</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #faf089;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: none;
+            padding: 0;
+        }
+        .description {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+        }
+        .slider {
+            width: 100vw;
+            max-width: 1349px;
+            height: 400px;
+            overflow: hidden;
+            margin: 10px auto 0 auto;
+            position: relative;
+        }
+        .slider-track {
+            display: flex;
+            transition: transform 0.8s ease-in-out;
+            width: calc(100vw * 7);
+            height: 100%;
+        }
+        .slide {
+            min-width: 100vw;
+            height: 100%;
+            flex-shrink: 0;
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #fdd835;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            color: #2e7d32;
+            cursor: pointer;
+            z-index: 2000;
+        }
+        .menu-toggle::before {
+            content: '\22EE';
+            display: block;
+            text-align: center;
+            line-height: 40px;
+        }
+        .menu-toggle.open::before {
+            content: '\2716';
+        }
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 200px;
+            height: 100vh;
+            background: #fff9c4;
+            border-left: 2px solid #fbc02d;
+            border-radius: 0 0 0 10px;
+            padding: 60px 20px 20px 20px;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1050;
+        }
+        .menu a {
+            display: block;
+            color: #2e7d32;
+            text-decoration: none;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .menu.open {
+            right: 0;
+        }
+        .page {
+            display: none;
+            padding: 20px;
+        }
+        .active {
+            display: block;
+        }
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('tulisan.png');
+            background-size: contain;
+            background-position: top;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        .footer {
+            background: #575429;
+            color: #9ef8a3;
+            text-align: center;
+            padding: 30px 50px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: auto;
+        }
+        .logo-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .logo {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #fbc02d;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 5px;
+            left: 20px;
+            z-index: 1000;
+        }
+        .logo-top {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .judul-top {
+            font-size: 20px;
+            color: #2e7d32;
+            font-weight: bold;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-top: 10px;
+        }
+        .button-form {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 15px;
+            background-color: #fbc02d;
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .button-form:hover {
+            background-color: #fdd835;
+        }
+        .about-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px 20px;
+            justify-items: center;
+        }
+
+        .about-gallery img {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .about-gallery .last-center {
+            grid-column: span 1;
+            justify-self: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+    <div class="header-left">
+        <img src="logo.png" alt="Logo Pislumyut" class="logo-top">
+        <h1 class="judul-top">Pislumyut</h1>
+    </div>
+
+    <nav>
+        <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()"></button>
+        <div class="menu" id="menu">
+            <a href="#" onclick="showPage('home')">Home</a>
+            <a href="#" onclick="showPage('products')">Our Products</a>
+            <a href="#" onclick="showPage('PO')">Open PO Pislumyut</a>
+            <a href="#" onclick="showPage('about')">About Us</a>
+        </div>
+    </nav>
+
+    <section class="page active" id="home">
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo Pislumyut" class="logo" style="margin-top: 40px;">
+        <div class="description" style="margin-bottom: -30px; margin-left: 400px; margin-right: 400px;">
+            <p><strong style="font-size: 30px; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">📣 HALOOO WARGA PETRA 2!!</strong></p>
+            <br>
+            <p>Kabar gembira nih!! Kriuk Manja x Es Goyang Lidah resmi open pre-order dan bisa kalian ambil pada Senin, 21 April 2025 yaa! Tenang aja, kita juga tetap menerima order di tempat kok!</p>
+            <br>
+            <p><strong>📍Lokasi:</strong> SMA Kristen Petra 2 - Lantai 1</p>
+            <br>
+            <p>Kami menyediakan 2 menu spesial yang siap membuat lidah kalian joget:</p>
+            <br>
+            <p><strong style="font-size: 25px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">🍌 Kriuk Manja</strong><br>Pisang goreng madu kriuk dengan topping saus coklat, susu kental manis, mentega gula yang meleleh di mulut! Manisnya pas, crunchy-nya dapett!! Dijamin nggak cukup satu!</p>
+            <br>
+            <p><strong style="font-size: 25px; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">🪝 Es Goyang Lidah</strong><br>Es lumut mangga yang seger maksimal! Perpaduan jelly lumut mangga dan susu yang nyegerin yang siap menyegarkan harimu di tengah cuaca panas!!</p>
+            <br>
+            <p><strong>Harga cuma 10k aja per porsi!<br>Harga KAKI LIMA, rasa BINTANG LIMA!!</strong></p>
+            <br>
+            <p>Siapa bilang jajan cuma soal makan?<br>Di stand kita, ada games yang bisa bikin jajan makin asik!<br>Main dapet bonus? Bisa banget!<br>Tapi cuma yang PO dan dateng yang bisa ngerasain sendiri!!</p>
+            <br>
+            <p><strong>Yuk buruan order sebelum kehabisan!!</strong></p>
+        </div>
+        <div class="slider" style="margin-top: 20px; margin-left: -18px; margin-bottom: -20px;">
+            <div class="slider-track" id="sliderTrack">
+                <div class="slide"><img src="banner.png" alt="Slide 1"></div>
+                <div class="slide"><img src="axell.png" alt="Slide 2"></div>
+                <div class="slide"><img src="elois.png" alt="Slide 3"></div>
+                <div class="slide"><img src="tanesha.png" alt="Slide 4"></div>
+                <div class="slide"><img src="john.png" alt="Slide 5"></div>
+                <div class="slide"><img src="natasa.png" alt="Slide 6"></div>
+                <div class="slide"><img src="banner.png" alt="Slide 1 Clone"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" id="products">
+        <h2 style="text-align: center; color: #2e7d32; font-size: 36px; margin-top: 50px;">Our Products</h2>
+        <div style="display: flex; justify-content: center; align-items: center; padding: 40px;">
+            <img src="poster.jpg" alt="Produk Utama" style="max-width: 90%; height: auto; object-fit: contain; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+        </div>
+    </section>
+    
+
+    <section class="page" id="PO">
+        <div class="description">
+            <h2 style="color: #2e7d32; margin-top: 150px;">Open PO Pislumyut</h2>
+            <p>Isi google form berikut untuk pre-orderr!!</p>
+            <a href="https://forms.gle/bgWE3wz7Lgj6nnEw8" target="_blank" class="button-form" >Isi Form Pre-Order</a>
+        </div>
+    </section>
+
+    <section class="page" id="about">
+        <h2 style="color: #2e7d32; font-size: 30px; text-align: center; margin-top: 50px;">Tentang Kami</h2>
+    
+        <div class="about-gallery">
+            <img src="n.jpg" alt="logo natasa">
+            <img src="logo.png" alt="Logo">
+            <img src="promo.jpg" alt="Promo">
+            <img src="l.jpg" alt="logo axell">
+            <img src="poster.jpg" alt="Poster">
+            <img src="AI.jpg" alt="logo AI">
+            <img src="minion.jpeg" alt="Minion" class="last-center">
+        </div>
+    </section>
+
+    <script>
+       function toggleMenu() {
+    const menu = document.getElementById('menu');
+    const toggleBtn = document.getElementById('menuToggle');
+    
+    menu.classList.toggle('open');
+    toggleBtn.classList.toggle('open');
+    }
+    
+    function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    document.getElementById(pageId).classList.add('active');
+
+    const menu = document.getElementById('menu');
+    const toggleBtn = document.getElementById('menuToggle');
+    
+    menu.classList.remove('open');
+    toggleBtn.innerHTML = '&#8942;'; // Balikin ke titik tiga
+    }
+    
+        // Slider utama (Home)
+        const track = document.getElementById('sliderTrack');
+        const slides = document.querySelectorAll('.slider-track .slide');
+        let index = 0;
+    
+        function slideShow() {
+            index++;
+            track.style.transition = 'transform 0.8s ease-in-out';
+            track.style.transform = `translateX(-${index * 100}vw)`;
+    
+            const currentImg = slides[index % slides.length].querySelector('img').src;
+            const delay = currentImg.includes('banner.png') ? 7000 : 5000;
+    
+            if (index === slides.length - 1) {
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    track.style.transform = 'translateX(0)';
+                    index = 0;
+                    setTimeout(slideShow, 7000);
+                }, delay);
+            } else {
+                setTimeout(slideShow, delay);
+            }
+        }
+    
+        setTimeout(slideShow, 7000);
+    
+        // Slider About Us
+        let indexAbout = 0;
+    
+        function slideShowAbout() {
+            const trackAbout = document.getElementById('sliderTrackAbout');
+            const slidesAbout = trackAbout?.querySelectorAll('.slide');
+            if (!trackAbout || !slidesAbout || slidesAbout.length === 0) return;
+    
+            indexAbout++;
+            trackAbout.style.transition = 'transform 0.8s ease-in-out';
+            trackAbout.style.transform = `translateX(-${indexAbout * 100}vw)`;
+    
+            const currentImg = slidesAbout[indexAbout % slidesAbout.length].querySelector('img').src;
+            const delay = currentImg.includes('poster.jpg') ? 7000 : 5000;
+    
+            if (indexAbout === slidesAbout.length - 1) {
+                setTimeout(() => {
+                    trackAbout.style.transition = 'none';
+                    trackAbout.style.transform = 'translateX(0)';
+                    indexAbout = 0;
+                    setTimeout(slideShowAbout, 7000);
+                }, delay);
+            } else {
+                setTimeout(slideShowAbout, delay);
+            }
+        }
+    </script>    
+
+    <footer class="footer">
+        <p>Payment:</p>
+        <p>No. Rek.: 5200138301 A/n: Petrus Saputra</p>
+        <br>
+        <p><strong>Informasi lebih lanjut:</strong></p>
+        <p>
+            WA: <a href="https://wa.me/6281335383412" target="_blank" style="color: #9ef8a3; text-decoration: underline;"> +62 813-3538-3412</a> A/n: Axell | 
+            IG: <a href="https://www.instagram.com/pislumyut?igsh=NWJ4aHM2djZjOXhs" target="_blank" style="color: #9ef8a3; text-decoration: underline;"> @pislumyut</a> | 
+            Lokasi: SMA Kristen Petra 2</p>
+    </footer>
+</body>
+</html>
